@@ -1,0 +1,40 @@
+<Block>
+  <blockName>Block Ins MoveForward</blockName>
+  <position>(314.9, 344.0, 0.0)</position>
+  <isVariable>false</isVariable>
+  <varName />
+  <sections>
+    <Section>
+      <childBlocks />
+      <inputs>
+        <Input>
+          <isOperation>false</isOperation>
+          <value>1</value>
+        </Input>
+      </inputs>
+    </Section>
+  </sections>
+</Block>
+#
+<Block>
+  <blockName>Block Ins RotateAxis</blockName>
+  <position>(301.9, 291.6, 0.0)</position>
+  <isVariable>false</isVariable>
+  <varName />
+  <sections>
+    <Section>
+      <childBlocks />
+      <inputs>
+        <Input>
+          <isOperation>false</isOperation>
+          <value>X axis</value>
+        </Input>
+        <Input>
+          <isOperation>false</isOperation>
+          <value>5</value>
+        </Input>
+      </inputs>
+    </Section>
+  </sections>
+</Block>
+#
