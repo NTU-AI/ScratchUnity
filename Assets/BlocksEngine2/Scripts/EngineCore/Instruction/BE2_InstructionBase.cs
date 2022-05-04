@@ -102,14 +102,14 @@ public class BE2_InstructionBase : MonoBehaviour, I_BE2_InstructionBase
 
     int _overflowLimit = 100;
 
-    public string UpdateCode(I_BE2_Instruction instruction, int tabCounter)
+    public string UpdateCode(string text, int tabCounter)
     {
         string newCode = "";
 
         for (int j = 0; j < tabCounter; j++)
             newCode += "\t";
 
-        newCode += instruction.Generator(generator.GetGeneratorLanguage());
+        newCode += text;
 
         return newCode;
     }
@@ -118,44 +118,85 @@ public class BE2_InstructionBase : MonoBehaviour, I_BE2_InstructionBase
     {
         string code = "";
 
+        // variavel para contar a quantidade de tabs dado durante o codigo
         int tabCounter = 0;
 
-        List<I_BE2_Block> conditionals_and_loop_blocks =  new List<I_BE2_Block>();
+        // dicionario para guardar os blocos que possuem mais de uma secao de codigo
+        Dictionary<I_BE2_Block, int> blocks_with_sections = new Dictionary<I_BE2_Block, int>();
 
         if (BlocksStack != null && BlocksStack.InstructionsArray != null && BlocksStack.InstructionsArray.Length >= 0)
         {
 
+            // vare o a pilha de blocos e monta o código
             for (int i = 0; i < BlocksStack.InstructionsArray.Length; i++)
             {
-
+          
                 I_BE2_Instruction instruction = BlocksStack.InstructionsArray[i];
                 I_BE2_Block currentBlock = instruction.InstructionBase.Block;
                 BlockTypeEnum type = currentBlock.Type;
 
+                // verifica se o bloco eh do tipo codition, loop ou trigger, tipos que possuiram seus codigos em novos escopos (tab)
                 if (type.ToString() == "condition" || type.ToString() == "loop" || type.ToString() == "trigger")
                 {
-                    if (conditionals_and_loop_blocks.Contains(currentBlock))
+                    // verifica a quantidade de secoes que o bloco atual tem
+                    int sectionNumber = currentBlock.Layout.SectionsArray.Length;
+
+                    // se o bloco nao estiver salvo no dic
+                    if (!blocks_with_sections.ContainsKey(currentBlock))
                     {
-                        conditionals_and_loop_blocks.Remove(currentBlock);
-                        code += "\n";
-                        tabCounter--;
+                        // adiciona o bloco e incrementa seu contador de secao lida
+                        blocks_with_sections.Add(currentBlock, 1);
+
+                        // atualiza o codigo
+                        code += UpdateCode(instruction.Generator(generator.GetGeneratorLanguage()), tabCounter);
+
+                        // incrementa o tabCounter
+                        tabCounter++;
                     }
                     else 
                     {
-                        //conditionals_and_loop_blocks.Add(currentBlock);
-                        code += UpdateCode(instruction, tabCounter);
-                        tabCounter++;
+                        // se estiver salvo, pega o valor do contador de secao
+                        int sectionCounter = blocks_with_sections[currentBlock];
+
+                        // se o contador estiver atualizando
+                        if (sectionCounter < sectionNumber)
+                        {
+                            // decrementa para acrescentar a chamada da nova secao
+                            tabCounter--;
+
+                            // adiciona o else
+                            code += UpdateCode("else:\n", tabCounter);
+
+                            // incrementa para adicionar a secao
+                            tabCounter++;
+
+                            // atualiza o contador de secao
+                            blocks_with_sections[currentBlock]++;
+                        }
+                        else
+                        {
+                            // se o contador parou de atualizar, remove o bloco do dic
+                            blocks_with_sections.Remove(currentBlock);
+                            
+                            // pula linha
+                            code += "\n";
+
+                            //decrementa o tabCounter
+                            tabCounter--;
+                        }
                     }
                 }
                 else
                 {
-                    code += UpdateCode(instruction, tabCounter);
+                    // atualiza o codigo com o generator do bloco
+                    code += UpdateCode(instruction.Generator(generator.GetGeneratorLanguage()), tabCounter);
                 }
             }
 
             if (generator.generatorLanguage.Equals(BE2_Generator.programmingLanguages.Python))
             {
-                code += "if __name__ == \'__main__\':\n" +
+                // adiciona o footer do codigo
+                code += "\nif __name__ == \'__main__\':\n" +
                    "\tmain()\n";
             }
             else if (generator.generatorLanguage.Equals(BE2_Generator.programmingLanguages.Cpp))
@@ -166,6 +207,8 @@ public class BE2_InstructionBase : MonoBehaviour, I_BE2_InstructionBase
         }
         else
         {
+            // caso o bloco esteja se nenhum trigger
+
             /*if (Block != null)
             {
                 Debug.Log(Block.GetType()) ;

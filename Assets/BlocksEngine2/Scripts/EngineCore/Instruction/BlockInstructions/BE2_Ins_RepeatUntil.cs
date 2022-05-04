@@ -36,8 +36,11 @@ public class BE2_Ins_RepeatUntil : BE2_InstructionBase, I_BE2_Instruction
     {
         string code = "";
 
+        I_BE2_BlockSectionHeaderInput _input0 = Section0Inputs[0];
+        string _value = _input0.StringValue;
+
         if (language.Equals(BE2_Generator.programmingLanguages.Python))
-            code = "...\n";
+            code = "while ("+_value+"):\n";
         else if (language.Equals(BE2_Generator.programmingLanguages.Cpp))
             code = "...\n";
 

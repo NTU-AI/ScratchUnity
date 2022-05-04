@@ -24,7 +24,7 @@ public class BE2_Ins_RepeatForever : BE2_InstructionBase, I_BE2_Instruction
         string code = "";
 
         if (language.Equals(BE2_Generator.programmingLanguages.Python))
-            code = "...\n";
+            code = "while (true):\n";
         else if (language.Equals(BE2_Generator.programmingLanguages.Cpp))
             code = "...\n";
 
