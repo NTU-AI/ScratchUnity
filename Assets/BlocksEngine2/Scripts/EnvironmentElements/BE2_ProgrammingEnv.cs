@@ -106,4 +106,10 @@ public class BE2_ProgrammingEnv : MonoBehaviour, I_BE2_ProgrammingEnv
 
         UpdateBlocksList();
     }
+
+    public void SetTargetObject(BE2_TargetObject target)
+    {
+        targetObject = target;
+        Debug.Log(target.gameObject.name);
+    }
 }

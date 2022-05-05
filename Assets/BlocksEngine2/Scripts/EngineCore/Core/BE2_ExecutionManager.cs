@@ -22,11 +22,11 @@ public class BE2_ExecutionManager : MonoBehaviour
 
     void Start()
     {
-        UpdateBlocksStackList();
     }
 
     void Update()
     {
+        UpdateBlocksStackList();
         ExecuteInstructions();
     }
 
