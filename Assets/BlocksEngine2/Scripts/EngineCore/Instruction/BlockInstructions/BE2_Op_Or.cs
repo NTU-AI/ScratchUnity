@@ -34,8 +34,13 @@ public class BE2_Op_Or : BE2_InstructionBase, I_BE2_Instruction
     {
         string code = "";
 
+        I_BE2_BlockSectionHeaderInput __input0 = Section0Inputs[0];
+        I_BE2_BlockSectionHeaderInput __input1 = Section0Inputs[1];
+        string __vs0 = __input0.StringValue;
+        string __vs1 = __input1.StringValue;
+
         if (language.Equals(BE2_Generator.programmingLanguages.Python))
-            code = "...\n";
+            code = __vs0 + " or " + __vs1+"\n";
         else if (language.Equals(BE2_Generator.programmingLanguages.Cpp))
             code = "...\n";
 
